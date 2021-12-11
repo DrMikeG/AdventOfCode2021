@@ -1,5 +1,5 @@
 import os
-
+from time import perf_counter
 
 def isCharacterN(stringValue,characterIndex,wantedChar):
     return stringValue[characterIndex-1] == wantedChar
@@ -240,10 +240,10 @@ def riskLevel(x,y,gridXMax,gridYMax,heights):
     
     if (minNeighbour > midHeight):   
         # Is lower, so return risk as 1 + midHeight
-        print("{},{} is low point of {} with height {} risk level {}".format(x,y,neighbours,midHeight,1+midHeight))
+        #print("{},{} is low point of {} with height {} risk level {}".format(x,y,neighbours,midHeight,1+midHeight))
         return 1+midHeight
-    else:
-        print("{},{} is not low point of {} with height {}".format(x,y,neighbours,midHeight))
+    #else:
+        #print("{},{} is not low point of {} with height {}".format(x,y,neighbours,midHeight))
     
     return 0
 
@@ -341,7 +341,7 @@ def printHeights(heights):
         print(row)
 
 def mainTask():
-
+    t1_start = perf_counter()  
     input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\09b\\tool_src\\input.txt"
     heights = processInputFile(input_path)
     
@@ -372,7 +372,7 @@ def mainTask():
         char = i+97
         setHeight(coord[0],coord[1],heights,char)
 
-    printHeights(heights)
+    #printHeights(heights)
 
     expanded = True
     while(expanded):
@@ -381,7 +381,7 @@ def mainTask():
             expandedI = expandBasin(i+97,gridXMax,gridYMax,heights)
             if expandedI:
                 expanded = True
-                printHeights(heights)
+                #printHeights(heights)
 
     # No more expansion possible
     assert( allNumbersAre9orMove(heights) )
@@ -390,14 +390,16 @@ def mainTask():
 
     for i in range(nBasin):
         pos = findBasinMemberPositions(i+97,gridXMax,gridYMax,heights)
-        print("Basin {} has {} members".format(chr(i+97),len(pos)))
+        #print("Basin {} has {} members".format(chr(i+97),len(pos)))
         basinSizes.append( (chr(i+97), len(pos)) )
     
-    print(basinSizes)
+    #print(basinSizes)
     basinSizes.sort(reverse=True, key=lambda a: a[1])
-    print(basinSizes)
+    #print(basinSizes)
 
     print(basinSizes[0][1]*basinSizes[1][1]*basinSizes[2][1])
+    t1_stop = perf_counter() 
+    print("Elapsed time for main is {}".format(t1_stop-t1_start)) 
 
 if __name__ == "__main__":
 
