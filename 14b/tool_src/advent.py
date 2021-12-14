@@ -54,9 +54,9 @@ def recursivelyExpandPairForNSteps(inputPair,map,letterCounts,nSteps,cache):
         insert = map[inputPair]
         pairLeft = inputPair[0]+insert
         pairRight = insert+inputPair[1]
-        if (nSteps-1 > 0):
-            assert((nSteps-1) in cache and pairLeft in cache[(nSteps-1)])
-            assert((nSteps-1) in cache and pairRight in cache[(nSteps-1)])
+        #if (nSteps-1 > 0):
+        #    assert((nSteps-1) in cache and pairLeft in cache[(nSteps-1)])
+        #    assert((nSteps-1) in cache and pairRight in cache[(nSteps-1)])
         recursivelyExpandPairForNSteps(pairLeft,map,letterCounts,nSteps-1,cache)
         recursivelyExpandPairForNSteps(pairRight,map,letterCounts,nSteps-1,cache)
 
@@ -77,11 +77,10 @@ def mainTask():
     cache = {}
     for cacheSteps in range(1,39):
         # for every pair in template
-        iMax = len(template)-1
         cacheForStep = {}
         cache[cacheSteps] = {}
-        for i in range(iMax):
-            pair = template[i:i+2]
+        for k in map:
+            pair = k
             if not pair in cacheForStep:
                 step_start = perf_counter()  
                 cacheLetterCounts = {}        
