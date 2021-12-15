@@ -1,0 +1,40 @@
+NNCB
+
+CH -> B
+HH -> N
+CB -> H
+NH -> C
+HB -> C
+HC -> B
+HN -> C
+NN -> C
+BH -> H
+NC -> B
+NB -> B
+BN -> B
+BB -> N
+BC -> B
+CC -> N
+CN -> C
+
+ 
+NNCB
+
+NN becomes NCN
+NC becomes NBC
+CB becomes CHB
+  [NBC]
+[NCN][CHB]
+
+NCNBCHB
+
+Two letters becomes three letters (with overlap)
+Only keep first two letter of each three
+
+NN becomes NC
+NC becomes NB
+CB becomes 
+
+Efficiently
+
+Given three letters and n rounds of expansion, what count do you get of each letter?
