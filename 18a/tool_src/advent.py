@@ -170,15 +170,40 @@ class SnailFishNumber:
         return False
 
     def triggerFirstSplit(self):
+        if not self.leftIsPair and self.leftNumber > 9:
+            print("Split left {}".format(self.toString()))
+            self.leftIsPair = True
+            h = (self.leftNumber // 2)
+            l = (self.leftNumber // 2) + self.leftNumber % 2
+            newStr = "["+ str(h) +","+str(l)+"]"
+            self.leftPair = SnailFishNumber(self,newStr)
+            return True
+        if not self.rightIsPair and self.rightNumber > 9:
+            print("Split right {}".format(self.toString()))
+            self.rightIsPair = True
+            h = (self.rightNumber // 2)
+            l = (self.rightNumber // 2) + self.rightNumber % 2
+            newStr = "["+ str(h) +","+str(l)+"]"
+            self.rightPair = SnailFishNumber(self,newStr)
+            return True
+
+        if self.leftIsPair and self.leftPair.triggerFirstSplit():
+            return True
+
+        if self.rightIsPair and self.rightPair.triggerFirstSplit():
+            return True
+        
         return False
 
     def reduce(self):
         while True:
             exploded = self.triggerFirstExplosion()
             if not exploded:
-                split = self.triggerFirstSplit()
+                split = self.triggerFirstSplit()            
             if not exploded and not split:
                 break
+            else:
+                print("{}".format(self.toString()))
 
 
     def splitString(inputString):
@@ -424,41 +449,15 @@ class Packet:
             assert(False)
             return ""
 
-            
-
-def hexStringIntoBitString(line):
-    
-    struct=""
-    for d in line.strip():
-        if d == '0': struct +='0000'
-        if d == '1': struct +='0001'
-        if d == '2': struct +='0010'
-        if d == '3': struct +='0011'
-        if d == '4': struct +='0100'
-        if d == '5': struct +='0101'
-        if d == '6': struct +='0110'
-        if d == '7': struct +='0111'
-        if d == '8': struct +='1000'
-        if d == '9': struct +='1001'
-        if d == 'A': struct +='1010'
-        if d == 'B': struct +='1011'
-        if d == 'C': struct +='1100'
-        if d == 'D': struct +='1101'
-        if d == 'E': struct +='1110'
-        if d == 'F': struct +='1111'
-
-    return struct
-
 def processInputFile(filePath):
-    bitStream =""
-    heights = ""
+    lines = []
     if os.path.exists(filePath):
         f = open(filePath, "r")
         for x in f:
-            bitStream = hexStringIntoBitString(x)
+            lines.append(x.strip())
     else:
         print("File "+filePath+" not found")
-    return bitStream
+    return lines
 
 
 def EatBits(bitString,packets,processed):
@@ -500,34 +499,17 @@ def GetPackets(bitString):
 def mainTask():
     t1_start = perf_counter()  
     
-    #assert(GetPackets(hexStringIntoBitString("D2FE28")) == 2021)
+    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\18a\\tool_src\\input_small.txt"
+    lines = processInputFile(input_path)
+    print(lines)
+
+    sumStr = lines[0]
+    for next in lines[1:]:
+        sumStr = SnailFishNumber.add(sumStr,next)
+        print("** {}".format(sumStr))
     
-    #assert(GetPackets("1101001011111110101111111000101000") == 518117)
-
-    #C200B40A82 finds the sum of 1 and 2, resulting in the value 3.
-    #assert(GetPackets(hexStringIntoBitString("C200B40A82")) == 3)
-    # 04005AC33890 finds the product of 6 and 9, resulting in the value 54.
-    #assert(GetPackets(hexStringIntoBitString("04005AC33890")) == 54)
-    # 880086C3E88112 finds the minimum of 7, 8, and 9, resulting in the value 7.
-    #assert(GetPackets(hexStringIntoBitString("880086C3E88112")) == 7)
-    # CE00C43D881120 finds the maximum of 7, 8, and 9, resulting in the value 9.
-    #assert(GetPackets(hexStringIntoBitString("CE00C43D881120")) == 9)
-    # D8005AC2A8F0 produces 1, because 5 is less than 15.
-    #assert(GetPackets(hexStringIntoBitString("D8005AC2A8F0")) == 1)
-    # F600BC2D8F produces 0, because 5 is not greater than 15.
-    #assert(GetPackets(hexStringIntoBitString("F600BC2D8F")) == 0)
-    # 9C005AC2F8F0 produces 0, because 5 is not equal to 15.
-    #assert(GetPackets(hexStringIntoBitString("9C005AC2F8F0")) == 0)
-    # 9C0141080250320F1802104A08 produces 1, because 1 + 3 = 2 * 2.
-    #assert(GetPackets(hexStringIntoBitString("9C0141080250320F1802104A08")) == 1)
-
-    # A0016C880162017C3686B18A3D4780 is an operator packet that contains an operator packet that contains an operator packet that contains five literal values; 
-    #assert(GetPackets(hexStringIntoBitString("A0016C880162017C3686B18A3D4780")) == 1)
-
-    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\16a\\tool_src\\input.txt"
-    bitString = processInputFile(input_path)
-    GetPackets(bitString)
-    
+    s = SnailFishNumber(sumStr)
+    print("Final sum {} magnitude {}".format(s.toString(),s.magnitude()))
 
     t1_stop = perf_counter() 
     print("Elapsed time for main is {}".format(t1_stop-t1_start)) 
