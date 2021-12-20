@@ -2,7 +2,12 @@
 # Copyright 2015 Daniel Imms <http://www.growingwiththeweb.com>
 # Released under the MIT license <http://github.com/gwtw/py-sorting/blob/master/LICENSE>
 
-from common.helpers import default_compare
+def default_compare(a, b):
+  if a < b:
+    return -1
+  elif a > b:
+    return 1
+  return 0
 
 def sort(array, compare=default_compare):
   unsorted_below = len(array)
