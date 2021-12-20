@@ -59,6 +59,40 @@ class TestSnailFish(unittest.TestCase):
         self.getMag("[[[[5,0],[7,4]],[5,5]],[6,6]]",1137)
         self.getMag("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]",3488)
 
+    def test_add0(self):
+        newStr = advent.SnailFishNumber.add("[1,2]","[[3,4],5]")
+        self.getMag(newStr,143)
+
+    def test_detectExplode01(self):
+        sn = advent.SnailFishNumber(None,"[[[[[9,8],1],2],3],4]")
+        self.assertTrue(sn.triggerFirstExplosion())
+        toString = sn.toString()
+        self.assertEqual(toString,"[[[[0,9],2],3],4]")
+
+    def test_detectExplode02(self):
+        sn = advent.SnailFishNumber(None,"[7,[6,[5,[4,[3,2]]]]]")
+        self.assertTrue(sn.triggerFirstExplosion())
+        toString = sn.toString()
+        self.assertEqual(toString,"[7,[6,[5,[7,0]]]]")
+        
+    def test_detectExplode03(self):
+        sn = advent.SnailFishNumber(None,"[[6,[5,[4,[3,2]]]],1]")
+        self.assertTrue(sn.triggerFirstExplosion())
+        toString = sn.toString()
+        self.assertEqual(toString,"[[6,[5,[7,0]]],3]")
+
+    def test_detectExplode04(self):
+        sn = advent.SnailFishNumber(None,"[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]")
+        self.assertTrue(sn.triggerFirstExplosion())
+        toString = sn.toString()
+        self.assertEqual(toString,"[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")
     
+    def test_detectExplode05(self):
+        sn = advent.SnailFishNumber(None,"[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")
+        self.assertTrue(sn.triggerFirstExplosion())
+        toString = sn.toString()
+        self.assertEqual(toString,"[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
+    
+
 if __name__ == '__main__':
     unittest.main()

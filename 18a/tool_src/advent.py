@@ -8,6 +8,7 @@ class SnailFishNumber:
     def __init__(self,parent = None, inputString = None):
 
         self.depth = 0
+        self.parent = None
         if not parent == None:
             self.parent = parent
             self.depth  = parent.depth + 1
@@ -38,6 +39,12 @@ class SnailFishNumber:
                 self.rightNumber = int(right)
                 self.rightIsPair = False
 
+    def getRoot(self):
+        if self.parent == None:
+            return self
+        else:
+            return self.parent.getRoot()
+
     def toString(self):
         left = ""
         if self.leftIsPair:
@@ -66,6 +73,114 @@ class SnailFishNumber:
         return (3*a) + (2*b)
 
 
+    def incrementRightmostLeaf(self,inc):
+        if not self.rightIsPair:
+            print("incrementing {} in {} to {}".format(self.rightNumber,self.toString(),self.rightNumber + inc))
+            self.rightNumber = self.rightNumber + inc
+        else:
+            self.rightPair.incrementRightmostLeaf(inc)
+
+    def incrementLeftmostLeaf(self,inc):
+        if not self.leftIsPair:
+            print("incrementing {} in {} to {}".format(self.leftNumber,self.toString(),self.leftNumber + inc))
+            self.leftNumber = self.leftNumber + inc
+        else:
+            self.leftPair.incrementLeftmostLeaf(inc)
+
+
+    def getParentWithLeftBranchYouCanAddTo(self):
+        c = self
+        p = self.parent
+        print("c = {} p = {}".format(c.toString(),p.toString()))
+        while p.leftPair == c:
+            c = p
+            p = p.parent            
+            if p == None:
+                return None
+            print("c = {} p = {}".format(c.toString(),p.toString()))
+        print("Wanted node {}".format(p.toString()))
+        return p
+
+    def getParentWithRightBranchYouCanAddTo(self):
+        c = self
+        p = self.parent
+        print("c = {} p = {}".format(c.toString(),p.toString()))
+        while p.rightPair == c:
+            c = p
+            p = p.parent            
+            if p == None:
+                return None
+            print("c = {} p = {}".format(c.toString(),p.toString()))
+        print("Wanted node {}".format(p.toString()))
+        return p
+
+    def explode(self):
+        assert(not self.leftIsPair)
+        assert(not self.rightIsPair)
+        print("explode {} left value {} right value {}".format(self.toString(),self.leftNumber,self.rightNumber))
+
+        assert(not self.parent == None)
+        # increment number to the left in the original string
+        # go up, until you can go left, go left, then go all the way right...
+        leftStart = self.getParentWithLeftBranchYouCanAddTo()
+        if not leftStart == None:
+            if leftStart.leftIsPair:
+                leftStart.leftPair.incrementRightmostLeaf(self.leftNumber)
+            else:
+                leftStart.leftNumber = leftStart.leftNumber + self.leftNumber
+        else:
+            print("Cannot explode left")
+
+        # increment number to the right in the original string
+        # go up, until you can go right, go right, then go all the way left...
+        rightStart = self.getParentWithRightBranchYouCanAddTo()
+        if not rightStart == None:
+            if rightStart.rightIsPair:
+                rightStart.rightPair.incrementLeftmostLeaf(self.rightNumber)
+            else:
+                rightStart.rightNumber = rightStart.rightNumber + self.rightNumber
+        else:
+            print("Cannot explode right")
+
+    
+        # Replace this pair with 0 in parent
+        assert(not self.parent == None)
+        if self.parent.leftPair == self:
+            self.parent.leftIsPair = False
+            self.parent.leftNumber = 0
+        else:
+            assert(self.parent.rightPair == self)
+            self.parent.rightIsPair = False
+            self.parent.rightNumber = 0
+
+
+    def triggerFirstExplosion(self):
+        if self.depth > 3 and not self.leftIsPair and not self.rightIsPair:
+            self.explode()
+            return True
+        else:
+            if self.leftIsPair:
+                foundLeft = self.leftPair.triggerFirstExplosion()
+                if foundLeft:
+                    return True
+            if self.rightIsPair:
+                foundRight = self.rightPair.triggerFirstExplosion()
+                if foundRight:
+                    return True
+        return False
+
+    def triggerFirstSplit(self):
+        return False
+
+    def reduce(self):
+        while True:
+            exploded = self.triggerFirstExplosion()
+            if not exploded:
+                split = self.triggerFirstSplit()
+            if not exploded and not split:
+                break
+
+
     def splitString(inputString):
         # move from start to pair the brackets until you reach a , at the top level
         # split the string at that index...
@@ -84,6 +199,13 @@ class SnailFishNumber:
         assert(len(left) > 0)
         assert(len(right) > 0)
         return left,right        
+
+    def add(currentString,nextString):
+        print("Adding {} + {}".format(currentString,nextString))
+        newString = "["+currentString+","+nextString+"]"
+        sf = SnailFishNumber(None,newString)
+        sf.reduce()
+        return sf.toString()
 
 
 class Packet:
