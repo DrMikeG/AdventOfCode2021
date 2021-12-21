@@ -207,14 +207,14 @@ class SnailFishNumber:
             if not exploded:
                 split = self.triggerFirstSplit()            
             if not exploded and not split:
-                print("{} {}".format(self.toString(),"End"))
+                #print("{} {}".format(self.toString(),"End"))
                 break
             else:
                 action = "Exploded"
                 if split:
                     action = "Split"
                 self.getDepths(depths)
-                print("{} {} {}".format(self.toString(),action,depths))
+                #print("{} {} {}".format(self.toString(),action,depths))
 
     def getDepths(self,depths):
         if self.leftIsPair:
@@ -246,7 +246,7 @@ class SnailFishNumber:
         return left,right        
 
     def add(currentString,nextString):
-        print("Adding {} + {}".format(currentString,nextString))
+        #print("Adding {} + {}".format(currentString,nextString))
         newString = "["+currentString+","+nextString+"]"
         sf = SnailFishNumber(None,newString)
         sf.reduce()
@@ -269,15 +269,26 @@ def mainTask():
     
     input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\18a\\tool_src\\input.txt"
     lines = processInputFile(input_path)
-    print(lines)
+    #print(lines)
 
-    sumStr = lines[0]
-    for next in lines[1:]:
-        sumStr = SnailFishNumber.add(sumStr,next)
-        print("** {}".format(sumStr))
-    
-    s = SnailFishNumber(None,sumStr)
-    print("Final sum {} magnitude {}".format(s.toString(),s.magnitude()))
+    maxMag = 0
+
+    for a in lines:
+        for b in lines:
+            if a != b:
+                sumStr = SnailFishNumber.add(a,b)
+                s = SnailFishNumber(None,sumStr)
+                m = s.magnitude()
+                if m > maxMag:
+                    maxMag = m
+                sumStr2 = SnailFishNumber.add(b,a)
+                s = SnailFishNumber(None,sumStr2)
+                m = s.magnitude()
+                if m > maxMag:
+                    maxMag = m
+
+
+    print("Final magnitude {}".format(maxMag))
 
 
     # 3078 is too high

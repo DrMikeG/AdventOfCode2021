@@ -207,14 +207,14 @@ class SnailFishNumber:
             if not exploded:
                 split = self.triggerFirstSplit()            
             if not exploded and not split:
-                print("{} {}".format(self.toString(),"End"))
+                #print("{} {}".format(self.toString(),"End"))
                 break
             else:
                 action = "Exploded"
                 if split:
                     action = "Split"
                 self.getDepths(depths)
-                print("{} {} {}".format(self.toString(),action,depths))
+                #print("{} {} {}".format(self.toString(),action,depths))
 
     def getDepths(self,depths):
         if self.leftIsPair:
@@ -246,7 +246,7 @@ class SnailFishNumber:
         return left,right        
 
     def add(currentString,nextString):
-        print("Adding {} + {}".format(currentString,nextString))
+        #print("Adding {} + {}".format(currentString,nextString))
         newString = "["+currentString+","+nextString+"]"
         sf = SnailFishNumber(None,newString)
         sf.reduce()
@@ -264,22 +264,63 @@ def processInputFile(filePath):
     return lines
 
 
+def sumOfThreeRoles(dice):
+    roll1 = dice[0] + 1
+    roll2 = dice[0] + 2
+    roll3 = dice[0] + 3
+    r = roll1+roll2+roll3
+    print("{}+{}+{} = ({})".format(roll1,roll2,roll3,r))
+    dice[0] = roll3
+    dice[1]= r
+
 def mainTask():
     t1_start = perf_counter()  
     
-    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\18a\\tool_src\\input.txt"
-    lines = processInputFile(input_path)
-    print(lines)
+    deterministicDice = [0,0]
 
-    sumStr = lines[0]
-    for next in lines[1:]:
-        sumStr = SnailFishNumber.add(sumStr,next)
-        print("** {}".format(sumStr))
-    
-    s = SnailFishNumber(None,sumStr)
-    print("Final sum {} magnitude {}".format(s.toString(),s.magnitude()))
+    p1Start = 7-1 # 0-9
+    p2Start = 8-1 # 0-9
+    #Player 1 starting position marked: 4
+    #Player 2 starting position marked: 8
+    p1Score = 0
+    p2Score = 0
+
+    p1Square = p1Start
+    p2Square = p2Start
+
+    diceRolled = 0
+
+    while p1Score < 1000 and p2Score < 1000:
+        # player 1 turn
+        sumOfThreeRoles(deterministicDice)
+        diceRolled = diceRolled + 3
+        print("The number of squares we will move forward is {}".format(deterministicDice[1]))
+        ignoringLaps = (deterministicDice[1] % 10)
+        print("Loops around the board don't matter, so it's really only {} steps around the board".format(ignoringLaps))
+        p1Square = (p1Square + deterministicDice[1]) % 10
+        print("Moves player forward to board cell {} which is labelled {}".format(p1Square,p1Square+1))
+        p1Score = p1Score + (p1Square+1)
+        print("Player 1 rolls {} and moves to space {} for a total score of {}".format(deterministicDice[1],p1Square+1,p1Score))
+
+        if p1Score >= 1000 or p2Score >= 1000:
+            break
+
+        # player 2 turn
+        sumOfThreeRoles(deterministicDice)
+        diceRolled = diceRolled + 3
+        print("The number of squares we will move forward is {}".format(deterministicDice[1]))
+        ignoringLaps = (deterministicDice[1] % 10)
+        print("Loops around the board don't matter, so it's really only {} steps around the board".format(ignoringLaps))
+        p2Square = (p2Square + deterministicDice[1]) % 10
+        print("Moves player forward to board cell {} which is labelled {}".format(p2Square,p2Square+1))
+        p2Score = p2Score + (p2Square+1)
+        print("Player 2 rolls {} and moves to space {} for a total score of {}".format(deterministicDice[1],p2Square+1,p2Score))
 
 
+    if p2Score > p1Score:
+        print("Player 2 wins with score of {} losing score {} * {} = {}".format(p2Score,p1Score,diceRolled,(p1Score*diceRolled)))
+    else:
+        print("Player 1 wins with score of {} losing score {} * {} = {}".format(p1Score,p2Score,diceRolled,(p2Score*diceRolled)))
     # 3078 is too high
 
     t1_stop = perf_counter() 
