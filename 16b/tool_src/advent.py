@@ -24,6 +24,21 @@ class Packet:
 
         print("Stream position {} started new packet version {} typeID {} depth {}".format(startingIndex,self.packetVersion,self.typeID,depth))
 
+        if self.typeID == 0:
+            print("** sum")
+        elif self.typeID == 1:
+            print("** product")
+        elif self.typeID == 2:
+            print("** minimum")
+        elif self.typeID == 3:
+            print("** maximum")
+        elif self.typeID == 5:
+            print("** greater than")
+        elif self.typeID == 6:
+            print("** less than")
+        elif self.typeID == 7:
+            print("** equal")
+
         if self.typeID == 4:
             #Literal value packets encode a single binary number
             self.subPackets = []
@@ -318,7 +333,7 @@ def mainTask():
     # A0016C880162017C3686B18A3D4780 is an operator packet that contains an operator packet that contains an operator packet that contains five literal values; 
     #assert(GetPackets(hexStringIntoBitString("A0016C880162017C3686B18A3D4780")) == 1)
 
-    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\16a\\tool_src\\input.txt"
+    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\16b\\tool_src\\input_dave.txt"
     bitString = processInputFile(input_path)
     GetPackets(bitString)
     
