@@ -395,6 +395,18 @@ def expandGraph(graph):
 
     return bigGraph2
 
+def printBigCaveNodeCosts(gridXMax,gridYMax,bigGraph):
+    output_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\15b\\tool_src\\output_cave_kevin.txt"
+    f = open(output_path, "a")
+    for y in range(gridYMax):
+        line = ""
+        for x in range(gridXMax):
+            line=line + str(getHeight(x,y,bigGraph))
+        f.write(line)    
+        f.write('\n')    
+    f.close()
+
+
 def printNodeCosts(gridXMax,gridYMax,nodeCosts):
     output_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\15b\\tool_src\\output_kevin.txt"
     f = open(output_path, "a")
@@ -426,9 +438,11 @@ def mainTask():
 
     # https://levelup.gitconnected.com/dijkstra-algorithm-in-python-8f0e75e3f16e
 
+    printBigCaveNodeCosts(gridXMax,gridYMax,bigGraph)
+
     parentsMap, nodeCosts = dijkstra( gridXMax, gridYMax, bigGraph, (0,0) )
 
-    printNodeCosts(gridXMax,gridYMax,nodeCosts)
+    #printNodeCosts(gridXMax,gridYMax,nodeCosts)
 
     if (gridXMax-1,gridYMax-1) in nodeCosts:
         print("Cost of path reaching bottom corner {}".format(nodeCosts[(gridXMax-1,gridYMax-1)]))
