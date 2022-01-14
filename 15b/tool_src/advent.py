@@ -395,10 +395,27 @@ def expandGraph(graph):
 
     return bigGraph2
 
+def printNodeCosts(gridXMax,gridYMax,nodeCosts):
+    output_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\15b\\tool_src\\output_kevin.txt"
+    f = open(output_path, "a")
+    for y in range(gridYMax,):
+        line = ""
+        for x in range(gridXMax):
+            f.write(str(x))
+            f.write(',')
+            f.write(str(y))
+            f.write(',')
+            f.write(str(nodeCosts[(x,y)]))
+            f.write('\n')
+            #line=line + "," + str(nodeCosts[(x,y)])
+        #f.write(line)
+        #f.write('\n')
+        #print(line)    
+    f.close()
 
 def mainTask():
     t1_start = perf_counter()  
-    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\15b\\tool_src\\input.txt"
+    input_path = "C:\\Users\\gibbens\\Documents\\Arduino\\AdventOfCode2021\\15b\\tool_src\\input_kevin.txt"
     graph = processInputFile(input_path)
 
     bigGraph = expandGraph(graph)
@@ -410,6 +427,8 @@ def mainTask():
     # https://levelup.gitconnected.com/dijkstra-algorithm-in-python-8f0e75e3f16e
 
     parentsMap, nodeCosts = dijkstra( gridXMax, gridYMax, bigGraph, (0,0) )
+
+    printNodeCosts(gridXMax,gridYMax,nodeCosts)
 
     if (gridXMax-1,gridYMax-1) in nodeCosts:
         print("Cost of path reaching bottom corner {}".format(nodeCosts[(gridXMax-1,gridYMax-1)]))
